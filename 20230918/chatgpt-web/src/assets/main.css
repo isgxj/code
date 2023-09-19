@@ -1,0 +1,32 @@
+@import './base.css';
+
+button {
+  background: none;
+  outline: none;
+  border: 0;
+  cursor: pointer;
+  color: inherit;
+  font-size: inherit;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.aic {
+  align-items: center;
+}
+
+.jcc {
+  justify-content: center;
+}
+
+.icon-sm {
+  stroke-width: 2;
+  height: 1rem;
+  width: 1rem
+}
