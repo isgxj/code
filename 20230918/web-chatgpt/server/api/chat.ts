@@ -2,7 +2,8 @@ import { formatSend } from '../../utils/chatgpt'
 import { OpenAI } from 'openai-streams'
 import { sendStream } from 'h3'
 
-const apiKey = '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'
+const apiBaseUrl = 'https://api.openai-proxy.com/v1'
+const apiKey = process.env.NUXT_OPENAI_API_KEY
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
@@ -10,9 +11,9 @@ export default defineEventHandler(async (event) => {
     'chat',
     {
       ...formatSend(body),
-      stream: true
+      stream: true,
     },
-    { apiKey },
-  );
+    { apiKey, apiBase: apiBaseUrl },
+  )
   return sendStream(event, stream)
 })

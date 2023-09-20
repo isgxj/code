@@ -3,8 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
+    "build": "nuxt build --dotenv .env",
+    "dev": "nuxt dev --dotenv .env",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
@@ -19,7 +19,6 @@
     "less": "^4.2.0",
     "markdown-it": "^13.0.1",
     "markdown-it-highlightjs": "^4.0.1",
-    "nuxt-storage": "^1.2.2",
     "openai-streams": "^6.2.0",
     "vue-loading-overlay": "^6.0.3"
   }
