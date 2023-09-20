@@ -71,12 +71,62 @@ async function submit() {
   pushChat(inputStr.value)
   inputStr.value = ''
   isLoading.value = true
-  const res = await $fetch('/api/chat', {
+  const completion = await fetch('/api/chat', {
     method: 'post',
     body: chatList[selectIndex.value].items,
   })
-  pushChat(res, true)
-  isLoading.value = false
+  console.log(completion, 81);
+  const reader = completion.body?.getReader();
+  if (!reader) return
+  const decoder = new TextDecoder('utf-8');
+  let generateText = ''
+  const read = async () => {
+    const { done, value } = await reader.read();
+    if (done) {
+      console.log("release locked");
+      return reader.releaseLock();
+    }
+    
+    const chunk = decoder.decode(value, { stream: true });
+    const temp = chunk.replace(/\}/g, '},'); //JSON.parse(JSON.stringify(chunk));
+    console.log(temp, 8);
+    const jsonData = temp
+      .split(',')
+      .map((data) => {
+        const trimData = data.trim();
+        console.log(trimData);
+        if (trimData === '') return undefined;
+        if (trimData === '{"content":"\n\n"}') return undefined;
+        if (trimData === '[DONE]') return undefined;
+        return trimData;
+      })
+      .filter((data) => data);
+    
+    let textOutput = ''
+
+    for (let i = 0; i < jsonData.length; i++) {
+      try {
+        const str = jsonData[i] || '{}'
+        if (JSON.parse(str).content === '\n\n') {
+          textOutput = '';
+        } else {
+          textOutput = JSON.parse(str).content;
+        }
+      } catch(e) {
+        console.log(e);
+      }
+
+      if (textOutput) {
+        generateText = generateText + textOutput;
+        console.log(generateText);
+      }
+    }
+    return read();
+  };
+  await read();
+  console.log(generateText);
+  // pushChat(res, true)
+  // isLoading.value = false
 }
 </script>
 

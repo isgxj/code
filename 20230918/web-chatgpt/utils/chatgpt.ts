@@ -1,5 +1,5 @@
 const apiBaseUrl = 'https://api.openai-proxy.com/v1/chat/completions'
-const apiKey = ''
+const apiKey = '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'
 
 const DEFAULT_SYSTEM_TEMPLATE = `
 You are ChatGPT, a large language model trained by OpenAI.
@@ -52,6 +52,21 @@ export async function sendRequest(messages: any) {
     ...messages,
   ].map(item => ({ role: item.role, content: item.content }))
   return requestOpenai({ ...modelConfig, messages: msgs })
+}
+
+export function formatSend(messages: any) {
+  const modelConfig = {
+    model: 'gpt-3.5-turbo',
+    temperature: 0.7,
+  }
+  const msgs = [
+    {
+      role: 'system',
+      content: getDefaultSystem(modelConfig),
+    },
+    ...messages,
+  ].map(item => ({ role: item.role, content: item.content }))
+  return { ...modelConfig, messages: msgs }
 }
 
 export function formatMessage(res: any) {
