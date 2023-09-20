@@ -1,5 +1,5 @@
 const apiBaseUrl = 'https://api.openai-proxy.com/v1/chat/completions'
-const apiKey = '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'
+const apiKey = ''
 
 const DEFAULT_SYSTEM_TEMPLATE = `
 You are ChatGPT, a large language model trained by OpenAI.
