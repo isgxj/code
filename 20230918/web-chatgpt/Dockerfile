@@ -1,13 +1,33 @@
-FROM node:18-alpine
+FROM node:18-alpine AS base
+
+FROM base AS deps
+
+RUN apk add --no-cache libc6-compat
 
 WORKDIR /app
 
+COPY package.json yarn.lock ./
+
+RUN yarn config set registry 'https://registry.npmmirror.com/'
+RUN yarn install
+
+FROM base AS builder
+
+RUN apk update && apk add --no-cache git
+
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-RUN yarn config set registry 'https://registry.npmmirror.com/' \
-  && yarn install \
-  && yarn build
+RUN yarn build
 
-EXPOSE 3004
+FROM base AS runner
+WORKDIR /app
 
-CMD ["npm", "run", "start"]
+RUN apk add proxychains-ng
+
+COPY --from=builder /app/.output ./.output
+
+EXPOSE 3000
+
+CMD ["node", ".output/server/index.mjs"]
