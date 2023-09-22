@@ -1,23 +1,21 @@
-FROM node:18-alpine AS base
+FROM alpine AS base
 
-FROM base AS deps
-
-WORKDIR /app
-
-COPY package.json yarn.lock ./
-
-RUN yarn config set registry 'https://registry.npmmirror.com/'
-RUN yarn install
+RUN apk add --no-cache nodejs=18.17.1-r0
 
 FROM base AS builder
 
+RUN apk add --no-cache npm=9.6.6-r0 && npm install -g yarn
+
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+
 COPY . .
 
-RUN yarn build
+RUN yarn config set registry 'https://registry.npmmirror.com/'\
+  && yarn install\
+  && yarn build
 
 FROM base AS runner
+
 WORKDIR /app
 
 COPY --from=builder /app/.output ./.output
