@@ -1,5 +1,5 @@
 const apiBaseUrl = 'http://service-mlb9xgxe-1251208590.usw.apigw.tencentcs.com/release/v1/chat/completions'
-const apiKey = ''
+const apiKey = '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'
 
 const DEFAULT_SYSTEM_TEMPLATE = `
 You are ChatGPT, a large language model trained by OpenAI.
